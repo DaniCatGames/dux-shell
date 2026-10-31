@@ -1341,6 +1341,7 @@ Singleton {
         }
     }
     readonly property color lockScreenContentColor: "#ffffff"
+    readonly property real lockScreenRingTrackAlpha: 0.35
     readonly property real lockScreenScrimAlpha: 0.4
     readonly property real lockScreenBlur: 0.8
     readonly property int lockScreenBlurMax: 32

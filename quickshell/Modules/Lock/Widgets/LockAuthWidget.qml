@@ -37,7 +37,6 @@ Item {
     readonly property real ringSize: LockMetrics.fieldHeight * 2.5
     readonly property real ringStroke: Theme.spacingS
     property int typedCount: 0
-    property real keyAngle: 0
 
     onPasswordBufferChanged: {
         const grew = passwordBuffer.length > typedCount;
@@ -45,7 +44,7 @@ Item {
         if (!grew || demoMode)
             return;
         lockHost.setInputRevealed(true);
-        keyAngle = (passwordBuffer.length * 137.5) % 360;
+        keySegment.keyAngle += 137.5;
         if (ring)
             keyPulse.restart();
         if (morph)
@@ -191,18 +190,34 @@ Item {
                 x: Math.max(-LockMetrics.shakeDistance, Math.min(LockMetrics.shakeDistance, passwordBox.errorOffset))
             }
 
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: LockMetrics.effectsDuration * 3
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Theme.expressiveCurves.expressiveEffects
+                }
+            }
+
             Shape {
                 anchors.fill: parent
                 opacity: root.showPasswordField ? 1 : 0
                 preferredRendererType: Shape.CurveRenderer
 
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: LockMetrics.effectsDuration * 3
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Theme.expressiveCurves.expressiveEffects
+                    }
+                }
+
                 ShapePath {
                     strokeColor: {
                         if (root.failed)
                             return Theme.withAlpha(Theme.error, Theme.pendingOpacity);
-                        if (root.authenticating || root.passwordBuffer.length === 0)
+                        if (root.passwordBuffer.length === 0)
                             return Theme.withAlpha(root.plainColor, Theme.stateLayerDrag);
-                        return Theme.withAlpha(root.accentColor, Theme.pendingOpacity);
+                        return Theme.withAlpha(Theme.primaryContainer, Theme.lockScreenRingTrackAlpha);
                     }
                     strokeWidth: root.ringStroke
                     fillColor: "transparent"
@@ -219,7 +234,7 @@ Item {
 
                     Behavior on strokeColor {
                         ColorAnimation {
-                            duration: LockMetrics.effectsDuration
+                            duration: LockMetrics.effectsDuration * 3
                             easing.type: Easing.BezierSpline
                             easing.bezierCurve: Theme.expressiveCurves.expressiveEffects
                         }
@@ -233,9 +248,19 @@ Item {
                 preferredRendererType: Shape.CurveRenderer
                 opacity: 0
 
+                property real keyAngle: 0
+
+                Behavior on keyAngle {
+                    NumberAnimation {
+                        duration: LockMetrics.effectsDuration
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Theme.expressiveCurves.expressiveDefaultSpatial
+                    }
+                }
+
                 ShapePath {
-                    strokeColor: root.accentColor
-                    strokeWidth: root.ringStroke
+                    strokeColor: Theme.primary
+                    strokeWidth: root.ringStroke * 1.25
                     fillColor: "transparent"
                     capStyle: ShapePath.RoundCap
 
@@ -244,23 +269,29 @@ Item {
                         centerY: root.ringSize / 2
                         radiusX: ringIndicator.radius
                         radiusY: ringIndicator.radius
-                        startAngle: root.keyAngle - 90
-                        sweepAngle: 30
+                        startAngle: keySegment.keyAngle - 90
+                        sweepAngle: 90
                     }
                 }
 
                 SequentialAnimation {
                     id: keyPulse
-                    PropertyAction {
+                    NumberAnimation {
                         target: keySegment
                         property: "opacity"
-                        value: 1
+                        to: 1
+                        duration: LockMetrics.effectsDuration / 2
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Theme.expressiveCurves.expressiveEffects
+                    }
+                    PauseAnimation {
+                        duration: LockMetrics.effectsDuration / 2
                     }
                     NumberAnimation {
                         target: keySegment
                         property: "opacity"
                         to: 0
-                        duration: Theme.expressiveDurations.expressiveSlowEffects
+                        duration: LockMetrics.effectsDuration * 2
                         easing.type: Easing.BezierSpline
                         easing.bezierCurve: Theme.expressiveCurves.expressiveEffects
                     }
