@@ -335,6 +335,16 @@ func runSetupDmsConfig(name string) error {
 	}
 
 	fmt.Printf("Deployed %s to %s\n", name, path)
+
+	// Stock binds leave the version-dependent ones to binds-next.kdl.
+	if compositor == "niri" && name == "binds" {
+		if _, err := config.WriteNiriBindsNext(dmsDir, config.ProbeNiriCapabilities()); err != nil {
+			return fmt.Errorf("failed to write %s: %w", config.NiriBindsNextFile, err)
+		}
+		if config.NiriConfigMissingBindsNext(dmsDir) {
+			fmt.Println(config.NiriBindsNextIncludeHint)
+		}
+	}
 	return nil
 }
 
@@ -565,10 +575,7 @@ func compositorPrimaryPaths(wm deps.WindowManager) []string {
 	case deps.WindowManagerHyprland:
 		return []string{filepath.Join(config.HyprlandConfigDir(), "hyprland.lua")}
 	case deps.WindowManagerMango:
-		return []string{
-			filepath.Join(homeDir, ".config", "mango", "config.conf"),
-			filepath.Join(homeDir, ".config", "mango", "mango.conf"),
-		}
+		return mangoconf.MainConfigs(mangoconf.Dir())
 	default:
 		return nil
 	}

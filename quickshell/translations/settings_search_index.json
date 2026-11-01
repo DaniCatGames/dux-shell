@@ -15070,6 +15070,23 @@
     "conditionKey": "pointerCapable"
   },
   {
+    "section": "touchpadPinchSensitivity",
+    "label": "Pinch sensitivity",
+    "tabIndex": 44,
+    "category": "Mouse & touchpad",
+    "keywords": [
+      "gesture",
+      "input",
+      "mouse",
+      "pinch",
+      "sensitivity",
+      "touchpad",
+      "zoom"
+    ],
+    "parentLabel": "Input",
+    "conditionKey": "isNiri"
+  },
+  {
     "section": "mouseAccelSpeed",
     "label": "Pointer speed",
     "tabIndex": 44,
@@ -16693,6 +16710,40 @@
       "wallpaper"
     ],
     "parentLabel": "Wallpaper & colors"
+  },
+  {
+    "section": "wallpaperCyclingVideoEnd",
+    "label": "Advance when a video ends",
+    "tabIndex": 52,
+    "category": "Automatic cycling",
+    "keywords": [
+      "advance",
+      "automatic",
+      "background",
+      "bg",
+      "colors",
+      "colour",
+      "colours",
+      "cycling",
+      "desktop",
+      "end",
+      "ends",
+      "hue",
+      "image",
+      "live",
+      "next",
+      "once",
+      "palette",
+      "picture",
+      "play",
+      "shown",
+      "tint",
+      "video",
+      "wallpaper",
+      "wallpapers"
+    ],
+    "parentLabel": "Wallpaper & colors",
+    "description": "Video wallpapers play once, then the next wallpaper is shown"
   },
   {
     "section": "wallpaperCycling",
